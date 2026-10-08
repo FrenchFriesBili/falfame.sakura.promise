@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>樱花之约</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+width: 100%; height: 100%;
+overflow: hidden;
+font-family: "WenQuanYi Micro Hei", "PingFang SC", "Microsoft YaHei", sans-serif;
+background: #000;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
+}
+#app {
+position: relative;
+width: 100%; height: 100%;
+max-width: 900px;
+margin: 0 auto;
+overflow: hidden;
+}
+/* 背景层 */
+#bg {
+position: absolute; inset: 0;
+background-size: cover;
+background-position: center;
+transition: background-image 0.8s ease;
+filter: brightness(0.55);
+}
+#bg::after {
+content: "";
+position: absolute; inset: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%);
+}
+/* 角色立绘 */
+#character {
+position: absolute;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+height: 78%;
+max-height: 640px;
+opacity: 0;
+transition: opacity 0.6s ease, transform 0.6s ease;
+pointer-events: none;
+filter: drop-shadow(0 0 30px rgba(255,180,200,0.15));
+}
+#character.show { opacity: 1; }
+/* 对话框 */
+#dialogueBox {
+position: absolute;
+left: 50%; bottom: 16px;
+transform: translateX(-50%);
+width: calc(100% - 32px);
+min-height: 170px;
+background: rgba(20, 15, 25, 0.82);
+backdrop-filter: blur(10px);
+border: 1px solid rgba(255, 200, 220, 0.25);
+border-radius: 16px;
+padding: 18px 20px 56px;
+color: #fff;
+box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+#speaker {
+font-size: 17px;
+font-weight: bold;
+color: #ffb6c8;
+margin-bottom: 8px;
+text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+#text {
+font-size: 16px;
+line-height: 1.75;
+min-height: 60px;
+color: #f5f0f3;
+}
+.cursor {
+display: inline-block;
+width: 8px;
+animation: blink 0.7s infinite;
+color: #ffb6c8;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+/* 点击继续提示 */
+#nextHint {
+position: absolute;
+right: 18px; bottom: 14px;
+font-size: 13px;
+color: rgba(255,200,220,0.7);
+animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+/* 选项按钮 */
+#choices {
+position: absolute;
+left: 50%; top: 50%;
+transform: translate(-50%, -50%);
+width: calc(100% - 48px);
+display: none;
+flex-direction: column;
+gap: 12px;
+z-index: 20;
+}
+.choice-btn {
+background: rgba(40, 25, 40, 0.9);
+border: 1px solid rgba(255, 180, 200, 0.5);
+color: #fff;
+font-size: 16px;
+padding: 16px 20px;
+border-radius: 12px;
+cursor: pointer;
+transition: all 0.25s;
+font-family: inherit;
+}
+.choice-btn:hover, .choice-btn:active {
+background: rgba(255, 120, 160, 0.35);
+transform: scale(1.02);
+}
+/* 顶部信息栏 */
+#topBar {
+position: absolute; top: 12px; left: 12px; right: 12px;
+display: flex; justify-content: space-between; align-items: center;
+z-index: 15;
+}
+#menuBtn {
+background: rgba(20,15,25,0.7);
+border: 1px solid rgba(255,200,220,0.3);
+color: #ffb6c8;
+width: 40px; height: 40px;
+border-radius: 50%;
+font-size: 20px;
+cursor: pointer;
+}
+/* 菜单面板 */
+#menuPanel {
+position: absolute; inset: 0;
+background: rgba(10,5,15,0.92);
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 18px;
+z-index: 30;
+padding: 24px;
+}
+#menuPanel h2 { color: #ffb6c8; font-size: 24px; margin-bottom: 10px; }
+.menu-item {
+width: 100%; max-width: 300px;
+background: rgba(255,180,200,0.12);
+border: 1px solid rgba(255,180,200,0.3);
+color: #fff;
+padding: 14px;
+border-radius: 12px;
+font-size: 16px;
+cursor: pointer;
+text-align: center;
+font-family: inherit;
+}
+.menu-item:hover { background: rgba(255,120,160,0.3); }
+/* 标题画面 */
+#titleScreen {
+position: absolute; inset: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 25;
+background: radial-gradient(circle at 50% 40%, rgba(180,60,100,0.4), rgba(0,0,0,0.95));
+}
+#titleScreen h1 {
+font-size: 42px;
+color: #fff;
+text-shadow: 0 0 20px rgba(255,120,160,0.8);
+margin-bottom: 8px;
+letter-spacing: 6px;
+}
+#titleScreen .sub {
+color: rgba(255,200,220,0.7);
+font-size: 15px;
+margin-bottom: 60px;
+letter-spacing: 3px;
+}
+.start-btn {
+background: linear-gradient(135deg, #ff7aa0, #c06090);
+border: none;
+color: #fff;
+font-size: 20px;
+padding: 16px 48px;
+border-radius: 30px;
+cursor: pointer;
+box-shadow: 0 6px 24px rgba(255,100,150,0.5);
+font-family: inherit;
+letter-spacing: 4px;
+animation: float 2s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+/* 结局画面 */
+#endingScreen {
+position: absolute; inset: 0;
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 25;
+background: rgba(5,0,10,0.95);
+padding: 24px;
+text-align: center;
+}
+#endingScreen h2 { color: #ffb6c8; font-size: 28px; margin-bottom: 16px; }
+#endingScreen p { color: #ddd; font-size: 16px; line-height: 1.8; max-width: 600px; }
+#endingScreen .back-btn {
+margin-top: 40px;
+background: rgba(255,180,200,0.15);
+border: 1px solid rgba(255,180,200,0.4);
+color: #fff; padding: 12px 36px; border-radius: 24px;
+font-size: 16px; cursor: pointer; font-family: inherit;
+}
+/* 樱花粒子 */
+.petal {
+position: absolute;
+top: -20px;
+width: 12px; height: 12px;
+background: radial-gradient(circle at 30% 30%, #ffd6e0, #ffb6c8);
+border-radius: 50% 0 50% 50%;
+opacity: 0.7;
+pointer-events: none;
+z-index: 5;
+animation: fall linear infinite;
+}
+@keyframes fall {
+0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.8; }
+100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+<!-- 背景 -->
+<div id="bg" style="background-image:url('https://images.unsplash.com/photo-1522383225653-ed111181a951?w=900&q=80')"></div>
+<!-- 角色立绘 -->
+<img id="character" src="" alt="">
+<!-- 顶部栏 -->
+<div id="topBar">
+<button id="menuBtn">☰</button>
+</div>
+<!-- 对话框 -->
+<div id="dialogueBox">
+<div id="speaker"></div>
+<div id="text"></div>
+<div id="nextHint">点击继续 ▼</div>
+</div>
+<!-- 选项 -->
+<div id="choices"></div>
+<!-- 标题画面 -->
+<div id="titleScreen">
+<h1>樱花之约</h1>
+<div class="sub">— Powered By Github —</div>
+<button class="start-btn" onclick="startGame()">开 始</button>
+</div>
+<!-- 菜单 -->
+<div id="menuPanel">
+<h2>菜单</h2>
+<button class="menu-item" onclick="toggleMenu()">继续游戏</button>
+<button class="menu-item" onclick="restart()">从头开始</button>
+<button class="menu-item" onclick="showHistory()">回顾对话</button>
+<button class="menu-item" onclick="toggleMenu()">关闭菜单</button>
+</div>
+<!-- 结局画面 -->
+<div id="endingScreen">
+<h2 id="endingTitle"></h2>
+<p id="endingText"></p>
+<button class="back-btn" onclick="backToTitle()">返回标题</button>
+</div>
+</div>
+<script>
+// ============ 游戏数据 ============
+const backgrounds = {
+sakura:     "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=900&q=80",
+};
+// 使用 SVG 立绘（避免依赖外部图片）
+function makeCharacterSVG(color, hair, expr) {
+const expressions = {
+smile:  "M 160 200 Q 200 230 240 200",
+shy:    "M 165 205 Q 200 225 235 205",
+sad:    "M 160 210 Q 200 190 240 210",
+serious:"M 155 205 L 245 205",
+happy:  "M 150 195 Q 200 240 250 195"
+};
+const eyeY = expr === 'sad' ? 175 : 172;
+const eyeR = expr === 'happy' ? 6 : 10;
+return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="560" viewBox="0 0 400 560">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="${hair}"/><stop offset="1" stop-color="${color}"/>
+</linearGradient>
+</defs>
+<!-- 头发 -->
+<path d="M 60 180 Q 40 60 200 30 Q 360 60 340 180 Q 345 240 320 260 Q 300 200 280 170 Q 240 200 200 205 Q 160 200 120 170 Q 100 200 80 260 Q 55 240 60 180 Z" fill="${hair}"/>
+<!-- 身体 -->
+<path d="M 120 340 Q 100 460 90 560 L 310 560 Q 300 460 280 340 Q 250 320 200 325 Q 150 320 120 340 Z" fill="url(%23g)"/>
+<!-- 脸 -->
+<ellipse cx="200" cy="210" rx="95" ry="105" fill="%23ffe0d2"/>
+<!-- 眼睛 -->
+<ellipse cx="165" cy="${eyeY}" rx="${eyeR}" ry="${eyeR+2}" fill="%234a2a4a"/>
+<ellipse cx="235" cy="${eyeY}" rx="${eyeR}" ry="${eyeR+2}" fill="%234a2a4a"/>
+${expr==='happy'?'<path d="M 158 172 Q 165 162 172 172" stroke="%234a2a4a" fill="none" stroke-width="3"/><path d="M 228 172 Q 235 162 242 172" stroke="%234a2a4a" fill="none" stroke-width="3"/>':''}
+<!-- 嘴 -->
+<path d="${expressions[expr]}" stroke="%23c07080" fill="none" stroke-width="4" stroke-linecap="round"/>
+<!-- 腮红 -->
+<ellipse cx="140" cy="220" rx="14" ry="8" fill="%23ffb6c8" opacity="0.5"/>
+<ellipse cx="260" cy="220" rx="14" ry="8" fill="%23ffb6c8" opacity="0.5"/>
+</svg>`;
+}
+const characters = {
+sakura: {
+name: "刘 俊豪",
+smile:  makeCharacterSVG("#ffd0e0","#e88","smile"),
+shy:    makeCharacterSVG("#ffd0e0","#e88","shy"),
+happy:  makeCharacterSVG("#ffd0e0","#e88","happy"),
+sad:    makeCharacterSVG("#ffd0e0","#e88","sad"),
+},
+akira: {
+name: " yourself",
+serious: makeCharacterSVG("#a0c8ff","#456","serious"),
+}
+};
+// ============ 剧本 ============
+// node: { bg, char, expr, speaker, text, choices[], next, ending }
+let script = {};
+function buildScript() {
+script = {
+start: {
+text: "（晨读后的教室，日光透过窗户洒在课桌上）",
+next: "s1"
+},
+s1: {
+speaker: "你 (刘 俊豪)",
+text: "（抱着蓝书包站在讲台，手指捏着袖口）\n……大家好，我叫刘俊豪，以后转来这边读书。",
+next: "s2"
+},
+s2: {
+speaker: "农 家俊",
+text: "（后排，校服袖子卷到手肘，吐着舌做鬼脸偷看）",
+next:"s3"
+},
+s3: {
+speaker: "你 (刘 俊豪)",
+text: "（耳尖红了一点） \n别看了，你领子都歪到肩膀了。",
+next:"s4"
+},
+s4: {
+speaker: "农 家俊",
+text: "歪就歪呗，反正以后你站哪儿，我眼睛就往哪儿搁。",
+next:"s5"
+},
+s5: {
+speaker: "你 (刘 俊豪)",
+text: "别看了，你领子都歪到肩膀了。",
+next:"s6"
+},
+s6: {
+speaker: "农 家俊",
+text: "歪就歪呗，反正以后你站哪儿，我眼睛就往哪儿搁。",
+choices: [
+{ text: "（你低头看那片花瓣，声音很轻）", next: "route_a_1" },
+{ text: "（你抱着蓝书包，挑了下眉）", next: "route_b_1" }
+]
+},
+// ===== 路线 A =====
+route_a_1: {
+speaker: "你 (刘 俊豪)",
+text: "……你说话像不用过脑子。",
+next: "route_a_2"
+},
+route_a_2: {
+speaker: "农 家俊",
+text: "（还是那个姿势，胳膊搭椅背，吐了下舌）\n过脑子就说不出口了。我脑子笨，心倒挺准。",
+next: "route_a_3"
+},
+route_a_3: {
+text: "你忽然有点想笑，又忍住了。",
+next: "route_a_4"
+},
+route_a_4: {
+text: "下课铃响得迟。班主任让刘俊豪跟农家俊去领新课本，说是“同组方便照应”。",
+next: "route_a_5"
+},
+route_a_5: {
+text: "走廊里全是跑动的人影，农家俊走前面，背影像堵矮墙，把迎面撞来的几个学弟挡开。",
+next: "route_a_6"
+},
+route_a_6: {
+speaker: "农 家俊",
+text: "（回头，倒着走）\n书我扛，你拿蓝包就行。别被撞脏了。",
+next: "route_a_7"
+},
+route_a_7: {
+speaker: "你 (刘 俊豪)",
+text: "我背书包又不是摆设。",
+next: "route_a_8"
+},
+route_a_8: {
+speaker: "农 家俊",
+text: "是摆设。摆在我眼睛能看见的地方，就是好看的摆设。",
+next: "route_a_9"
+},
+route_a_9: {
+text: "刘俊豪这回没反驳，耳尖红得跟樱花一个色。",
+next: "route_a_10"
+},
+route_a_10: {
+text: "他跟在半步后头，看农家俊影子被夕阳拉得老长，自己的影子就叠在那影子的边沿上，像两道水彩晕开。",
+next: "route_a_11"
+},
+route_a_11: {
+text: "领书的地方是旧器材室改的，堆着一摞摞泛黄课本。农家俊蹲下去抱最底下一摞，校服下摆掀起来一点，露出腰侧一道小时候摔的浅疤。",
+next: "route_a_12"
+},
+route_a_12: {
+text: "刘俊豪看了一眼，移开视线。",
+next: "route_a_13"
+},
+route_a_13: {
+speaker: "你 (刘 俊豪)",
+text: "你……以前也这样，对谁都这样说话吗……",
+next: "route_a_14"
+},
+route_a_14: {
+speaker: "农 家俊",
+text: "（抱书起身，没笑）\n没。对别人是搞怪，对你是实话。",
+next: "route_a_15"
+},
+route_a_15: {
+text: "器材室有扇小窗，光斜进来，浮尘里都是粉的。",
+next: "route_a_16"
+},
+route_a_16: {
+text: "刘俊豪把蓝书包放书堆上，伸手，替他把领子正了正。",
+next: "route_a_17"
+},
+route_a_17: {
+text: "手指碰到布料的时候，两个人都没动。",
+next: "route_a_18"
+},
+route_a_18: {
+speaker: "你 (刘 俊豪)",
+text: "那……以后我站这儿，你就看吧。\n不过，别在全班面前说这种话。",
+next: "route_a_19"
+},
+route_a_19: {
+speaker: "农 家俊",
+text: "为啥？",
+next: "route_a_20"
+},
+route_a_20: {
+speaker: "你 (刘 俊豪)",
+text: "（垂眼，嘴角压着一点弧度）\n因为我会当真。当真了，就不好装普通同学了。",
+next: "route_a_21"
+},
+route_a_21: {
+text: "农家俊愣了一秒，然后笑出声，不是吐舌那种闹，是喉咙里闷出来的、很轻的笑。",
+next: "route_a_22"
+},
+route_a_22: {
+speaker: "农 家俊",
+text: "那就别装。\n我眼睛搁你身上，你心搁我这儿，挺配的。",
+next: "route_a_23"
+},
+route_a_23: {
+text: "回教室路上，两人各抱一摞书。农家俊故意走慢半步，看刘俊豪白衬衫后颈那点薄红。",
+next: "route_a_24"
+},
+route_a_24: {
+text: "蓝书包随着步子晃，像一小片安静的海。",
+next: "route_a_25"
+},
+route_a_25: {
+speaker: "路人",
+text: "你俩咋这么慢！",
+next: "route_a_26"
+},
+route_a_26: {
+speaker: "农 家俊",
+text: "看风景呢。",
+next: "route_a_27"
+},
+route_a_27: {
+text: "刘俊豪没回头，却把书包带往肩上拢紧了些。",
+next: "ending_a"
+},
+ending_a: {
+ending: true,
+title: "序章 END",
+text: "To Be Continued…"
+},
+// ===== 路线 B：犹豫 =====
+route_b_1: {
+text: "全班静了半拍，然后爆笑。",
+next: "route_b_2"
+},
+route_b_2: {
+speaker: "路人",
+text: "“农家俊你肉麻死了！”“哦——白衬衫学神被盯上了！”",
+next: "route_b_3"
+},
+route_b_3: {
+text: "刘俊豪没躲，反而抬了抬下巴。",
+next: "route_b_4"
+},
+route_b_4: {
+speaker: "你 (刘 俊豪)",
+text: "（抱蓝书包，挑了下眉）\n行啊。那我站讲台，你站底下，像看展品？",
+next: "route_b_5"
+},
+route_b_5: {
+speaker: "农家俊",
+text: "（拍桌站起来，吐舌，手还比了个框）\n对！人形取景框。我拍你，用眼睛拍，不花钱。",
+next: "route_b_6"
+},
+route_b_6: {
+text: "哄笑声里，刘俊豪居然笑了出来，是那种没防备的、露一点牙尖的笑。",
+next: "route_b_7"
+},
+route_b_7: {
+text: "他走下讲台，经过农家俊桌边时，伸手指把他领子又扯歪了一寸。",
+next: "ending_b"
+},
+ending_b: {
+ending: true,
+title: "序章 END",
+text: "To Be Continued…"
+},
+};
+}
+// ============ 引擎 ============
+let currentNode = "start";
+let typingTimer = null;
+let isTyping = false;
+let typewriterQueue = "";
+let historyLog = [];
+let petalTimer = null;
+
+const $ = id => document.getElementById(id);
+const bgEl = $("bg");
+const charEl = $("character");
+const speakerEl = $("speaker");
+const textEl = $("text");
+const choicesEl = $("choices");
+const dialogueBox = $("dialogueBox");
+
+buildScript();
+
+function startGame() {
+$("titleScreen").style.display = "none";
+currentNode = "start";
+historyLog = [];
+showNode("start");
+spawnPetals();
+}
+
+function showNode(id) {
+const node = script[id];
+if (!node) return;
+currentNode = id;
+
+if (node.ending) {
+showEnding(node);
+return;
+}
+
+// 背景
+if (node.bg) bgEl.style.backgroundImage = `url('${backgrounds[node.bg]}')`;
+
+// 角色
+if (node.char && node.expr) {
+charEl.src = characters[node.char][node.expr];
+charEl.classList.add("show");
+} else {
+charEl.classList.remove("show");
+}
+
+// 对话
+speakerEl.textContent = node.speaker || "";
+typeText(node.text || "");
+
+// 历史
+if (node.text) historyLog.push({ speaker: node.speaker, text: node.text });
+
+// 选项
+if (node.choices && node.choices.length > 0) {
+setTimeout(() => showChoices(node.choices), 600);
+} else {
+choicesEl.style.display = "none";
+}
+}
+
+function typeText(str) {
+clearInterval(typingTimer);
+textEl.innerHTML = "";
+isTyping = true;
+let i = 0;
+const cursor = document.createElement("span");
+cursor.className = "cursor";
+cursor.innerHTML = "█";
+
+typingTimer = setInterval(() => {
+if (i < str.length) {
+// 支持 \n，忽略 \b
+const ch = str[i] === "\n" ? "<br>" : (str[i] === "\b" ? "" : str[i]);
+textEl.innerHTML += ch;
+i++;
+} else {
+clearInterval(typingTimer);
+isTyping = false;
+}
+}, 35);
+}
+
+function showChoices(choices) {
+choicesEl.innerHTML = "";
+choices.forEach(c => {
+const btn = document.createElement("button");
+btn.className = "choice-btn";
+btn.textContent = c.text;
+btn.onclick = () => {
+choicesEl.style.display = "none";
+showNode(c.next);
+};
+choicesEl.appendChild(btn);
+});
+choicesEl.style.display = "flex";
+}
+
+function showEnding(node) {
+charEl.classList.remove("show");
+dialogueBox.style.display = "none";
+$("endingTitle").textContent = node.title;
+$("endingText").textContent = node.text;
+$("endingScreen").style.display = "flex";
+}
+
+function backToTitle() {
+$("endingScreen").style.display = "none";
+dialogueBox.style.display = "block";
+$("titleScreen").style.display = "flex";
+bgEl.style.backgroundImage = `url('${backgrounds.sakura}')`;
+}
+
+// 点击继续
+document.addEventListener("click", (e) => {
+// 忽略按钮点击
+if (e.target.tagName === "BUTTON") return;
+if (e.target.closest("#choices")) return;
+if (e.target.closest("#menuPanel")) return;
+if ($("titleScreen").style.display !== "none") return;
+if ($("endingScreen").style.display === "flex") return;
+if ($("menuPanel").style.display === "flex") return;
+
+const node = script[currentNode];
+if (!node) return;
+
+if (isTyping) {
+// 跳过打字
+clearInterval(typingTimer);
+textEl.innerHTML = (node.text || "").replace(/\n/g, "<br>").replace(/\b/g, "");
+isTyping = false;
+} else if (node.choices && node.choices.length > 0) {
+// 有选项时不跳过
+return;
+} else if (node.next) {
+showNode(node.next);
+}
+});
+
+// 菜单
+function toggleMenu() {
+const m = $("menuPanel");
+m.style.display = m.style.display === "flex" ? "none" : "flex";
+}
+$("menuBtn").onclick = toggleMenu;
+
+function restart() {
+toggleMenu();
+startGame();
+}
+
+function showHistory() {
+toggleMenu();
+// 改为页面内弹层，避免 window.open 被浏览器拦截
+let h = historyLog.slice(-12).map(h => `<b>${h.speaker || "　"}</b>：${h.text.replace(/\n/g," ")}`).join("<br><br>");
+if (!h) h = "（暂无对话记录）";
+let overlay = document.getElementById("historyOverlay");
+if (!overlay) {
+overlay = document.createElement("div");
+overlay.id = "historyOverlay";
+overlay.style.cssText = "position:absolute;inset:0;z-index:40;background:rgba(10,5,15,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow:auto;";
+document.getElementById("app").appendChild(overlay);
+}
+overlay.innerHTML = `<h2 style="color:#ffb6c8;font-size:22px;margin-bottom:20px;">对话回顾</h2><div style="max-width:600px;color:#f5f0f3;line-height:1.9;font-size:15px;text-align:left;">${h}</div><button class="menu-item" style="margin-top:28px;" onclick="document.getElementById('historyOverlay').style.display='none'">关闭</button>`;
+overlay.style.display = "flex";
+}
+
+// 樱花粒子（仅初始化一次，避免重复定时器）
+function spawnPetals() {
+if (petalTimer) return;
+petalTimer = setInterval(() => {
+const p = document.createElement("div");
+p.className = "petal";
+p.style.left = Math.random() * 100 + "vw";
+p.style.animationDuration = (6 + Math.random() * 5) + "s";
+p.style.width = p.style.height = (8 + Math.random() * 8) + "px";
+document.getElementById("app").appendChild(p);
+setTimeout(() => p.remove(), 11000);
+}, 400);
+}
+
+// 初始化背景
+bgEl.style.backgroundImage = `url('${backgrounds.sakura}')`;
+</script>
+</body>
+</html>
+
