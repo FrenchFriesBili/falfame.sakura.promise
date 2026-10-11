@@ -233,6 +233,88 @@ animation: fall linear infinite;
 0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.8; }
 100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
 }
+/* ============ 章节选择面板 ============ */
+#chapterPanel {
+  position: absolute; inset: 0;
+  background: rgba(10,5,15,0.94);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 35;
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+#chapterPanel h2 {
+  color: #ffb6c8;
+  font-size: 24px;
+  margin-bottom: 24px;
+  letter-spacing: 4px;
+}
+.chapter-list {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.chapter-card {
+  background: rgba(255,180,200,0.08);
+  border: 1px solid rgba(255,180,200,0.25);
+  border-radius: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.chapter-card:hover:not(.locked) {
+  background: rgba(255,120,160,0.2);
+  border-color: rgba(255,180,200,0.6);
+  transform: scale(1.02);
+}
+.chapter-card.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.chapter-card .chapter-title {
+  color: #fff;
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.chapter-card .chapter-desc {
+  color: rgba(255,200,220,0.65);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.chapter-status {
+  position: absolute;
+  top: 14px; right: 16px;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+.status-cleared { background: rgba(100,220,140,0.2); color: #7offaf; border: 1px solid rgba(100,220,140,0.4); }
+.status-available { background: rgba(255,180,200,0.2); color: #ffb6c8; border: 1px solid rgba(255,180,200,0.4); }
+.status-locked { background: rgba(255,255,255,0.08); color: #999; border: 1px solid rgba(255,255,255,0.15); }
+.chapter-close-btn {
+  margin-top: 28px;
+  width: 100%;
+  max-width: 300px;
+  background: rgba(255,180,200,0.12);
+  border: 1px solid rgba(255,180,200,0.3);
+  color: #fff;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+}
+.chapter-close-btn:hover { background: rgba(255,120,160,0.3); }
+
 </style>
 </head>
 <body>
@@ -266,13 +348,22 @@ animation: fall linear infinite;
 <button class="menu-item" onclick="restart()">从头开始</button>
 <button class="menu-item" onclick="showHistory()">回顾对话</button>
 <button class="menu-item" onclick="toggleMenu()">关闭菜单</button>
+<button class="menu-item" onclick="toggleMenu(); openChapterPanel()">章节选择</button>
 </div>
+
 <!-- 结局画面 -->
 <div id="endingScreen">
 <h2 id="endingTitle"></h2>
 <p id="endingText"></p>
 <button class="back-btn" onclick="backToTitle()">返回标题</button>
 </div>
+<!-- 章节选择面板 -->
+<div id="chapterPanel">
+  <h2>章节选择</h2>
+  <div class="chapter-list" id="chapterList"></div>
+  <button class="chapter-close-btn" onclick="closeChapterPanel()">返回</button>
+</div>
+
 </div>
 <script>
 // ============ 游戏数据 ============
@@ -327,6 +418,7 @@ serious: makeCharacterSVG("#a0c8ff","#456","serious"),
 }
 };
 // ============ 剧本 ============
+// ============ 序章 · 樱时 ============
 // node: { bg, char, expr, speaker, text, choices[], next, ending }
 let script = {};
 function buildScript() {
@@ -495,7 +587,7 @@ ending: true,
 title: "序章 END",
 text: "To Be Continued…"
 },
-// ===== 路线 B：犹豫 =====
+// ===== 路线 B =====
 route_b_1: {
 text: "全班静了半拍，然后爆笑。",
 next: "route_b_2"
@@ -525,6 +617,76 @@ next: "route_b_7"
 },
 route_b_7: {
 text: "他走下讲台，经过农家俊桌边时，伸手指把他领子又扯歪了一寸。",
+next: "route_b_8"
+},
+route_b_8: {
+text: "下课时，农家俊倒着走，边走边做鬼脸，路过镜子还凑过去跟镜里的刘俊豪并排比了个同款吐舌。",
+next: "route_b_9"
+},
+route_b_9: {
+speaker: "你 (刘 俊豪)",
+text: "你跟镜子也调情？",
+next: "route_b_10"
+},
+route_b_10: {
+speaker: "农 家俊",
+text: "错，跟镜子里的你调情。",
+next: "route_b_11"
+},
+route_b_11: {
+speaker: "你 (刘 俊豪)",
+text: "再胡说扔器材室去。",
+next: "route_b_12"
+},
+route_b_12: {
+speaker: "你 (刘 俊豪)",
+text: "农家俊，你这种喜欢，是闹着闹着就认真的那种吧。",
+next: "route_b_13"
+},
+route_b_13: {
+speaker: "农 家俊",
+text: "（收了所有鬼脸，看着他）\n对。闹是外壳，你才是芯。",
+next: "route_b_14"
+},
+route_b_14: {
+speaker: "农 家俊",
+text: "我以前跟谁都闹，唯独看你的时候，闹完还想安静下来多看看。",
+next: "route_b_15"
+},
+route_b_15: {
+text: "阳光扫过他晒黑的手臂，也扫过刘俊豪白衬衫上那片粉影。",
+next: "route_b_16"
+},
+route_b_16: {
+text: "刘俊豪忽然凑近一点，近到能看见农家俊睫毛上沾的浮尘。",
+next: "route_b_17"
+},
+route_b_17: {
+text: "农家俊喉结动了一下，然后“嗷”一声，像被击中，又吐舌笑起来。",
+next: "route_b_18"
+},
+route_b_18: {
+speaker: "路人",
+text: "你俩别太明显！",
+next: "route_b_19"
+},
+route_b_19: {
+speaker: "农 家俊",
+text: "还没到那步呢。",
+next: "route_b_20"
+},
+route_b_20: {
+text: "傍晚，放学了。樱花树底下，农家俊领子还是歪的，刘俊豪也没管，就站他影子里，抬手勾了下他小指。",
+next: "route_b_21"
+},
+route_b_21: {
+speaker: "你 (刘 俊豪)",
+text: "眼睛钉好了，手也先勾着。",
+next: "route_b_22"
+},
+route_b_22: {
+speaker: "农 家俊",
+text: "那以后手也钉上。",
 next: "ending_b"
 },
 ending_b: {
@@ -534,6 +696,7 @@ text: "To Be Continued…"
 },
 };
 }
+
 // ============ 引擎 ============
 let currentNode = "start";
 let typingTimer = null;
@@ -549,6 +712,101 @@ const speakerEl = $("speaker");
 const textEl = $("text");
 const choicesEl = $("choices");
 const dialogueBox = $("dialogueBox");
+// ============ 章节选择 ============
+const CHAPTERS = [
+  {
+    id: "ch0",
+    title: "序章 · 樱花之约",
+    desc: "",
+    startNode: "start",
+    require: null
+  },
+{
+  id: "ch1",
+  title: "第一章 · 雨日图书馆",
+  desc: "",
+  startNode: "ss1", 
+  require: "ch0",
+  locked: true
+}
+
+];
+
+function getClearedChapters() {
+  try {
+    return JSON.parse(localStorage.getItem("clearedChapters") || "[]");
+  } catch(e) { return []; }
+}
+function saveClearedChapter(id) {
+  const cleared = getClearedChapters();
+  if (!cleared.includes(id)) {
+    cleared.push(id);
+    localStorage.setItem("clearedChapters", JSON.stringify(cleared));
+  }
+}
+
+function openChapterPanel() {
+  const cleared = getClearedChapters();
+  const listEl = document.getElementById("chapterList");
+  listEl.innerHTML = "";
+
+  CHAPTERS.forEach(ch => {
+    let status = "locked";
+    if (ch.locked) {
+      status = "locked"; 
+    } else if (!ch.require) {
+      status = cleared.includes(ch.id) ? "cleared" : "available";
+    } else if (cleared.includes(ch.require)) {
+      status = cleared.includes(ch.id) ? "cleared" : "available";
+    }
+
+const card = document.createElement("div");
+card.className = "chapter-card" + (status === "locked" ? " locked" : "");
+const statusText = status === "cleared" 
+  ? "已通关" 
+  : status === "available" 
+  ? "可进入" 
+  : ch.locked 
+  ? "未开放" 
+  : "未解锁";
+card.innerHTML = `
+  <div class="chapter-title">${ch.title}</div>
+  <div class="chapter-desc">${ch.desc}</div>
+  <div class="chapter-status status-${status}">${statusText}</div>
+`;
+if (status !== "locked") {
+  card.onclick = () => enterChapter(ch);
+}
+listEl.appendChild(card);
+
+  });
+
+  document.getElementById("chapterPanel").style.display = "flex";
+}
+
+function closeChapterPanel() {
+  document.getElementById("chapterPanel").style.display = "none";
+}
+
+function enterChapter(chapter) {
+  closeChapterPanel();
+  $("titleScreen").style.display = "none";
+  $("endingScreen").style.display = "none";
+  dialogueBox.style.display = "block";
+  currentNode = chapter.startNode;
+  historyLog = [];
+  showNode(chapter.startNode);
+  spawnPetals();
+}
+
+// 在结局处记录通关
+const _origShowEnding = showEnding;
+showEnding = function(node) {
+  if (node === script["ending_a"]) saveClearedChapter("ch1");
+  if (node === script["ending_b"]) saveClearedChapter("ch2");
+  saveClearedChapter("ch0");
+  _origShowEnding(node);
+};
 
 buildScript();
 
@@ -721,4 +979,4 @@ bgEl.style.backgroundImage = `url('${backgrounds.sakura}')`;
 </script>
 </body>
 </html>
-
+！
