@@ -21,7 +21,6 @@ max-width: 900px;
 margin: 0 auto;
 overflow: hidden;
 }
-/* 背景层 */
 #bg {
 position: absolute; inset: 0;
 background-size: cover;
@@ -34,7 +33,6 @@ content: "";
 position: absolute; inset: 0;
 background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%);
 }
-/* 角色立绘 */
 #character {
 position: absolute;
 bottom: 0;
@@ -48,7 +46,6 @@ pointer-events: none;
 filter: drop-shadow(0 0 30px rgba(255,180,200,0.15));
 }
 #character.show { opacity: 1; }
-/* 对话框 */
 #dialogueBox {
 position: absolute;
 left: 50%; bottom: 16px;
@@ -83,7 +80,6 @@ animation: blink 0.7s infinite;
 color: #ffb6c8;
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-/* 点击继续提示 */
 #nextHint {
 position: absolute;
 right: 18px; bottom: 14px;
@@ -92,7 +88,6 @@ color: rgba(255,200,220,0.7);
 animation: pulse 1.5s infinite;
 }
 @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-/* 选项按钮 */
 #choices {
 position: absolute;
 left: 50%; top: 50%;
@@ -118,7 +113,6 @@ font-family: inherit;
 background: rgba(255, 120, 160, 0.35);
 transform: scale(1.02);
 }
-/* 顶部信息栏 */
 #topBar {
 position: absolute; top: 12px; left: 12px; right: 12px;
 display: flex; justify-content: space-between; align-items: center;
@@ -133,7 +127,6 @@ border-radius: 50%;
 font-size: 20px;
 cursor: pointer;
 }
-/* 菜单面板 */
 #menuPanel {
 position: absolute; inset: 0;
 background: rgba(10,5,15,0.92);
@@ -159,7 +152,6 @@ text-align: center;
 font-family: inherit;
 }
 .menu-item:hover { background: rgba(255,120,160,0.3); }
-/* 标题画面 */
 #titleScreen {
 position: absolute; inset: 0;
 display: flex;
@@ -196,7 +188,6 @@ letter-spacing: 4px;
 animation: float 2s ease-in-out infinite;
 }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-/* 结局画面 */
 #endingScreen {
 position: absolute; inset: 0;
 display: none;
@@ -217,7 +208,6 @@ border: 1px solid rgba(255,180,200,0.4);
 color: #fff; padding: 12px 36px; border-radius: 24px;
 font-size: 16px; cursor: pointer; font-family: inherit;
 }
-/* 樱花粒子 */
 .petal {
 position: absolute;
 top: -20px;
@@ -233,144 +223,284 @@ animation: fall linear infinite;
 0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.8; }
 100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
 }
-/* ============ 章节选择面板 ============ */
 #chapterPanel {
-  position: absolute; inset: 0;
-  background: rgba(10,5,15,0.94);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  z-index: 35;
-  padding: 32px 24px;
-  overflow-y: auto;
+position: absolute; inset: 0;
+background: rgba(10,5,15,0.94);
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+z-index: 35;
+padding: 32px 24px;
+overflow-y: auto;
 }
 #chapterPanel h2 {
-  color: #ffb6c8;
-  font-size: 24px;
-  margin-bottom: 24px;
-  letter-spacing: 4px;
+color: #ffb6c8;
+font-size: 24px;
+margin-bottom: 24px;
+letter-spacing: 4px;
 }
 .chapter-list {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+width: 100%;
+max-width: 420px;
+display: flex;
+flex-direction: column;
+gap: 14px;
 }
 .chapter-card {
-  background: rgba(255,180,200,0.08);
-  border: 1px solid rgba(255,180,200,0.25);
-  border-radius: 14px;
-  padding: 18px 20px;
-  cursor: pointer;
-  transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
+background: rgba(255,180,200,0.08);
+border: 1px solid rgba(255,180,200,0.25);
+border-radius: 14px;
+padding: 0 20px;
+height: 80px;
+cursor: pointer;
+transition: all 0.25s;
+position: relative;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+justify-content: center;
 }
 .chapter-card:hover:not(.locked) {
-  background: rgba(255,120,160,0.2);
-  border-color: rgba(255,180,200,0.6);
-  transform: scale(1.02);
+background: rgba(255,120,160,0.2);
+border-color: rgba(255,180,200,0.6);
+transform: scale(1.02);
 }
 .chapter-card.locked {
-  opacity: 0.45;
-  cursor: not-allowed;
+opacity: 0.45;
+cursor: not-allowed;
 }
 .chapter-card .chapter-title {
-  color: #fff;
-  font-size: 17px;
-  font-weight: bold;
-  margin-bottom: 6px;
+color: #fff;
+font-size: 17px;
+font-weight: bold;
+margin-bottom: 4px;
 }
 .chapter-card .chapter-desc {
-  color: rgba(255,200,220,0.65);
-  font-size: 13px;
-  line-height: 1.6;
+color: rgba(255,200,220,0.65);
+font-size: 13px;
+line-height: 1.6;
 }
 .chapter-status {
-  position: absolute;
-  top: 14px; right: 16px;
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-weight: bold;
+position: absolute;
+top: 50%; right: 16px;
+transform: translateY(-50%);
+font-size: 12px;
+padding: 3px 10px;
+border-radius: 20px;
+font-weight: bold;
 }
-.status-cleared { background: rgba(100,220,140,0.2); color: #7offaf; border: 1px solid rgba(100,220,140,0.4); }
+.status-cleared { background: rgba(100,220,140,0.2); color: #70ffaf; border: 1px solid rgba(100,220,140,0.4); }
 .status-available { background: rgba(255,180,200,0.2); color: #ffb6c8; border: 1px solid rgba(255,180,200,0.4); }
 .status-locked { background: rgba(255,255,255,0.08); color: #999; border: 1px solid rgba(255,255,255,0.15); }
 .chapter-close-btn {
-  margin-top: 28px;
-  width: 100%;
-  max-width: 300px;
-  background: rgba(255,180,200,0.12);
-  border: 1px solid rgba(255,180,200,0.3);
-  color: #fff;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 16px;
-  cursor: pointer;
-  text-align: center;
-  font-family: inherit;
+margin-top: 28px;
+width: 100%;
+max-width: 300px;
+background: rgba(255,180,200,0.12);
+border: 1px solid rgba(255,180,200,0.3);
+color: #fff;
+padding: 14px;
+border-radius: 12px;
+font-size: 16px;
+cursor: pointer;
+text-align: center;
+font-family: inherit;
 }
 .chapter-close-btn:hover { background: rgba(255,120,160,0.3); }
-
+#chapterModal {
+position: absolute; inset: 0;
+display: none;
+z-index: 40;
+background: rgba(5,0,10,0.72);
+backdrop-filter: blur(4px);
+align-items: center;
+justify-content: center;
+padding: 40px;
+}
+#chapterModal.show { display: flex; }
+.modal-curtain {
+position: relative;
+width: 100%;
+max-width: 560px;
+max-height: 86%;
+background: linear-gradient(160deg, rgba(40,12,34,0.98), rgba(8,2,16,0.98));
+border: 1px solid rgba(255,180,200,0.28);
+border-radius: 18px;
+box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,120,160,0.12);
+overflow: hidden;
+transform-origin: center center;
+transform: scaleY(0);
+opacity: 0;
+transition: transform 0.42s cubic-bezier(0.22, 0.8, 0.3, 1), opacity 0.3s ease;
+}
+#chapterModal.show .modal-curtain {
+transform: scaleY(1);
+opacity: 1;
+}
+#chapterModal.closing .modal-curtain {
+transform: scaleY(0);
+opacity: 0;
+transition: transform 0.32s cubic-bezier(0.6, 0, 0.78, 0.3), opacity 0.24s ease;
+}
+#chapterModal .modal-body {
+padding: 30px 30px 26px;
+overflow-y: auto;
+max-height: 86vh;
+text-align: center;
+}
+#chapterModal .modal-cover {
+width: 100%;
+height: 160px;
+border-radius: 14px;
+background-size: cover;
+background-position: center;
+margin-bottom: 22px;
+border: 1px solid rgba(255,180,200,0.3);
+box-shadow: 0 12px 40px rgba(255,100,150,0.25);
+}
+#chapterModal h3 {
+color: #ffb6c8;
+font-size: 24px;
+letter-spacing: 4px;
+margin-bottom: 14px;
+}
+#chapterModal .modal-desc {
+color: #e8dce2;
+font-size: 15px;
+line-height: 1.9;
+margin-bottom: 26px;
+}
+#chapterModal .modal-actions {
+display: flex;
+flex-direction: column;
+gap: 12px;
+align-items: center;
+}
+#chapterModal .modal-start-btn {
+background: linear-gradient(135deg, #ff7aa0, #c06090);
+border: none;
+color: #fff;
+font-size: 18px;
+padding: 15px 52px;
+border-radius: 30px;
+cursor: pointer;
+box-shadow: 0 6px 24px rgba(255,100,150,0.5);
+font-family: inherit;
+letter-spacing: 4px;
+}
+#chapterModal .modal-back-btn {
+background: transparent;
+border: 1px solid rgba(255,180,200,0.3);
+color: rgba(255,200,220,0.75);
+padding: 12px 40px;
+border-radius: 24px;
+font-size: 15px;
+cursor: pointer;
+font-family: inherit;
+}
+#chapterModal .modal-back-btn:hover { background: rgba(255,180,200,0.12); }
 </style>
 </head>
 <body>
 <div id="app">
-<!-- 背景 -->
 <div id="bg" style="background-image:url('https://images.unsplash.com/photo-1522383225653-ed111181a951?w=900&q=80')"></div>
-<!-- 角色立绘 -->
 <img id="character" src="" alt="">
-<!-- 顶部栏 -->
 <div id="topBar">
 <button id="menuBtn">☰</button>
 </div>
-<!-- 对话框 -->
 <div id="dialogueBox">
 <div id="speaker"></div>
 <div id="text"></div>
 <div id="nextHint">点击继续 ▼</div>
 </div>
-<!-- 选项 -->
 <div id="choices"></div>
-<!-- 标题画面 -->
 <div id="titleScreen">
 <h1>樱花之约</h1>
 <div class="sub">— Powered By Github —</div>
-<button class="start-btn" onclick="startGame()">开 始</button>
+<button class="start-btn" onclick="playSFX('click'); startGame()">开 始</button>
 </div>
-<!-- 菜单 -->
 <div id="menuPanel">
 <h2>菜单</h2>
-<button class="menu-item" onclick="toggleMenu()">继续游戏</button>
-<button class="menu-item" onclick="restart()">从头开始</button>
-<button class="menu-item" onclick="showHistory()">回顾对话</button>
-<button class="menu-item" onclick="toggleMenu()">关闭菜单</button>
-<button class="menu-item" onclick="toggleMenu(); openChapterPanel()">章节选择</button>
+<button class="menu-item" onclick="playSFX('click'); toggleMenu()">继续游戏</button>
+<button class="menu-item" onclick="playSFX('click'); restart()">从头开始</button>
+<button class="menu-item" onclick="playSFX('click'); showHistory()">回顾对话</button>
+<button class="menu-item" onclick="playSFX('click'); toggleMenu()">关闭菜单</button>
 </div>
-
-<!-- 结局画面 -->
 <div id="endingScreen">
 <h2 id="endingTitle"></h2>
 <p id="endingText"></p>
-<button class="back-btn" onclick="backToTitle()">返回标题</button>
+<button class="back-btn" onclick="playSFX('click'); backToTitle()">返回标题</button>
 </div>
-<!-- 章节选择面板 -->
 <div id="chapterPanel">
-  <h2>章节选择</h2>
-  <div class="chapter-list" id="chapterList"></div>
-  <button class="chapter-close-btn" onclick="closeChapterPanel()">返回</button>
+<h2>章节选择</h2>
+<div class="chapter-list" id="chapterList"></div>
+<button class="chapter-close-btn" onclick="playSFX('click'); closeChapterPanel()">返回</button>
 </div>
-
+<div id="chapterModal">
+<div class="modal-curtain">
+<div class="modal-body">
+<div class="modal-cover" id="modalCover"></div>
+<h3 id="modalTitle"></h3>
+<div class="modal-desc" id="modalDesc"></div>
+<div class="modal-actions">
+<button class="modal-start-btn" id="modalStartBtn" onclick="playSFX('click'); startSelectedChapter()">开始章节</button>
+<button class="modal-back-btn" onclick="playSFX('click'); closeChapterModal()">返回列表</button>
 </div>
+</div>
+</div>
+</div>
+</div>
+<audio id="bgmStandby" loop preload="auto">
+<source src="audio/standby.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgmState" preload="auto">
+<source src="audio/state.mp3" type="audio/mpeg">
+</audio>
+<audio id="bgmGame" loop preload="auto">
+<source src="audio/game.mp3" type="audio/mpeg">
+</audio>
+<audio id="sfxClick" preload="auto">
+<source src="audio/click.ogg" type="audio/ogg">
+<source src="audio/click.mp3" type="audio/mpeg">
+</audio>
+<audio id="sfxEnd" preload="auto">
+<source src="audio/end.mp3" type="audio/mpeg">
+</audio>
 <script>
-// ============ 游戏数据 ============
+function playBGM(key) {
+['bgmStandby','bgmState','bgmGame'].forEach(id => {
+const el = document.getElementById(id);
+if (!el) return;
+if (id === 'bgm' + key.charAt(0).toUpperCase() + key.slice(1)) {
+el.currentTime = 0;
+el.playbackRate = 1.0;
+el.play().catch(()=>{});
+} else {
+el.pause();
+el.currentTime = 0;
+}
+});
+}
+function stopAllBGM() {
+['bgmStandby','bgmState','bgmGame'].forEach(id => {
+const el = document.getElementById(id);
+if (el) { el.pause(); el.currentTime = 0; }
+});
+}
+function playSFX(key) {
+const idMap = { 'click': 'sfxClick', 'end': 'sfxEnd' };
+const el = document.getElementById(idMap[key] || key);
+if (el) { el.currentTime = 0; el.play().catch(()=>{}); }
+}
+function stopSFX(key) {
+const idMap = { 'click': 'sfxClick', 'end': 'sfxEnd' };
+const el = document.getElementById(idMap[key] || key);
+if (el) { el.pause(); el.currentTime = 0; }
+}
 const backgrounds = {
 sakura:     "https://images.unsplash.com/photo-1522383225653-ed111181a951?w=900&q=80",
 };
-// 使用 SVG 立绘（避免依赖外部图片）
 function makeCharacterSVG(color, hair, expr) {
 const expressions = {
 smile:  "M 160 200 Q 200 230 240 200",
@@ -387,19 +517,13 @@ return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4
 <stop offset="0" stop-color="${hair}"/><stop offset="1" stop-color="${color}"/>
 </linearGradient>
 </defs>
-<!-- 头发 -->
 <path d="M 60 180 Q 40 60 200 30 Q 360 60 340 180 Q 345 240 320 260 Q 300 200 280 170 Q 240 200 200 205 Q 160 200 120 170 Q 100 200 80 260 Q 55 240 60 180 Z" fill="${hair}"/>
-<!-- 身体 -->
 <path d="M 120 340 Q 100 460 90 560 L 310 560 Q 300 460 280 340 Q 250 320 200 325 Q 150 320 120 340 Z" fill="url(%23g)"/>
-<!-- 脸 -->
 <ellipse cx="200" cy="210" rx="95" ry="105" fill="%23ffe0d2"/>
-<!-- 眼睛 -->
 <ellipse cx="165" cy="${eyeY}" rx="${eyeR}" ry="${eyeR+2}" fill="%234a2a4a"/>
 <ellipse cx="235" cy="${eyeY}" rx="${eyeR}" ry="${eyeR+2}" fill="%234a2a4a"/>
 ${expr==='happy'?'<path d="M 158 172 Q 165 162 172 172" stroke="%234a2a4a" fill="none" stroke-width="3"/><path d="M 228 172 Q 235 162 242 172" stroke="%234a2a4a" fill="none" stroke-width="3"/>':''}
-<!-- 嘴 -->
 <path d="${expressions[expr]}" stroke="%23c07080" fill="none" stroke-width="4" stroke-linecap="round"/>
-<!-- 腮红 -->
 <ellipse cx="140" cy="220" rx="14" ry="8" fill="%23ffb6c8" opacity="0.5"/>
 <ellipse cx="260" cy="220" rx="14" ry="8" fill="%23ffb6c8" opacity="0.5"/>
 </svg>`;
@@ -417,9 +541,6 @@ name: " yourself",
 serious: makeCharacterSVG("#a0c8ff","#456","serious"),
 }
 };
-// ============ 剧本 ============
-// ============ 序章 · 樱时 ============
-// node: { bg, char, expr, speaker, text, choices[], next, ending }
 let script = {};
 function buildScript() {
 script = {
@@ -460,7 +581,6 @@ choices: [
 { text: "（你抱着蓝书包，挑了下眉）", next: "route_b_1" }
 ]
 },
-// ===== 路线 A =====
 route_a_1: {
 speaker: "你 (刘 俊豪)",
 text: "……你说话像不用过脑子。",
@@ -476,7 +596,7 @@ text: "你忽然有点想笑，又忍住了。",
 next: "route_a_4"
 },
 route_a_4: {
-text: "下课铃响得迟。班主任让刘俊豪跟农家俊去领新课本，说是“同组方便照应”。",
+text: "下课铃响得迟。班主任让刘俊豪跟农家俊去领新课本，说是同组方便照应。",
 next: "route_a_5"
 },
 route_a_5: {
@@ -587,14 +707,13 @@ ending: true,
 title: "序章 END",
 text: "To Be Continued…"
 },
-// ===== 路线 B =====
 route_b_1: {
 text: "全班静了半拍，然后爆笑。",
 next: "route_b_2"
 },
 route_b_2: {
 speaker: "路人",
-text: "“农家俊你肉麻死了！”“哦——白衬衫学神被盯上了！”",
+text: "农家俊你肉麻死了！\n哦——白衬衫学神被盯上了！",
 next: "route_b_3"
 },
 route_b_3: {
@@ -662,7 +781,7 @@ text: "刘俊豪忽然凑近一点，近到能看见农家俊睫毛上沾的浮�
 next: "route_b_17"
 },
 route_b_17: {
-text: "农家俊喉结动了一下，然后“嗷”一声，像被击中，又吐舌笑起来。",
+text: "农家俊喉结动了一下，然后嗷一声，像被击中，又吐舌笑起来。",
 next: "route_b_18"
 },
 route_b_18: {
@@ -694,17 +813,159 @@ ending: true,
 title: "序章 END",
 text: "To Be Continued…"
 },
+ss1: {
+speaker: "你 (刘 俊豪)",
+text: "（发梢湿了几缕，蓝书包搁脚边，翻着书没翻页）\n手钉上了，可你还是淋雨跑过来。",
+next: "ss2"
+},
+ss2: {
+speaker: "农 家俊",
+text: "（校服肩膀洇深一片，甩了甩头发上的水）\n答应你的事，下雨也得钉。你呢，怎么也没带伞。",
+next: "ss3"
+},
+ss3: {
+speaker: "你 (刘 俊豪)",
+text: "（合上书，指尖在封面上点了两下）\n本来想等你来，一起淋回去。反正手都钉了，湿一只也是湿。",
+next: "ss4"
+},
+ss4: {
+text: "农家俊没说话，拉过旁边椅子坐下，膝盖差点撞上他的。两人之间隔着半臂，雨声把图书馆的翻书声盖得只剩模糊一片。",
+next: "ss5"
+},
+ss5: {
+speaker: "农 家俊",
+text: "（拿指节碰了碰他湿的发尾）\n头发湿成这样，回去该感冒了。",
+next: "ss6"
+},
+ss6: {
+speaker: "你 (刘 俊豪)",
+text: "（没躲，抬眼看他）你管得也太宽了。手钉上，连头发也要管？",
+next: "ss7"
+},
+ss7: {
+speaker: "农 家俊",
+text: "对，全管。从领子到头发，从今天到以后。",
+next: "ss8"
+},
+ss8: {
+text: "刘俊豪嘴角弯了一下，把蓝书包提上来抱住，像挡住半张脸。",
+next: "ss9"
+},
+ss9: {
+speaker: "你 (刘 俊豪)",
+text: "那别人说闲话，你也管？",
+next: "ss10"
+},
+ss10: {
+speaker: "农 家俊",
+text: "（往他那边挪了半寸，膝盖抵上他的）\n别人说什么，我耳朵自动屏蔽。我只听你一个人的。",
+next: "ss11"
+},
+ss11: {
+text: "窗外雨下得更密了，玻璃上一道道水痕往下淌。图书馆里只剩他们这角还亮着，暖黄的。",
+next: "ss12"
+},
+ss12: {
+text: "刘俊豪低头，看见农家俊那只手摊在两人之间的桌面上，指头还带着点温度。",
+next: "ss13"
+},
+ss13: {
+speaker: "你 (刘 俊豪)",
+text: "（声音很轻）\n农家俊，手钉上了，就别松了。",
+next: "ss14"
+},
+ss14: {
+speaker: "农 家俊",
+text: "不松。钉死了。",
+choices: [
+{ text: "轻轻握住他的手", next: "route_aa_1" },
+{ text: "把干毛巾搭在他头上揉了揉", next: "route_bb_1" }
+]
+},
+route_aa_1: {
+speaker: "你 (刘 俊豪)",
+text: "（把蓝书包放膝上，手从书包旁慢慢挪过去，指尖停在桌面，碰了碰他的指节）\n农家俊，手给我。",
+next: "route_aa_2"
+},
+route_aa_2: {
+speaker: "农 家俊",
+text: "（手指微微张开，掌心朝上）\n……给你。",
+next: "route_aa_3"
+},
+route_aa_3: {
+speaker: "你 (刘 俊豪)",
+text: "（指尖贴着他的掌心肌肤，一点点滑进指缝，轻轻扣住，没用力）\n你手好热。跑过来的？",
+next: "route_aa_4"
+},
+route_aa_4: {
+text: "（手指收紧一点，拇指蹭过他的手背）\n嗯。怕你等久了，就一路跑过来了。",
+next: "route_aa_5"
+},
+route_aa_5: {
+text: "（低头看着两只手交叠的地方，指腹无意识地摩挲他的指节）\n那以后下雨，别跑了。走过来就行。",
+next: "route_aa_6"
+},
+route_aa_6: {
+text: "好。但手得牵着走。",
+next: "route_aa_7"
+},
+route_aa_7: {
+text: "（嘴角弯起来，指尖在他掌心轻轻一勾）\n……行。钉着了，不准松。",
+next: "route_aa_8"
+},
+route_aa_8: {
+text: "不松。钉死了。",
+next: "ending_aa"
+},
+ending_aa: {
+ending: true,
+title: "第一章 · 雨日图书馆 END",
+text: "To Be Continued…"
+},
+route_bb_1: {
+speaker: "你 (刘 俊豪)",
+text: "（从蓝书包侧袋抽出一条干毛巾，探过身，盖在他湿漉漉的头发上）\n低头。",
+next: "route_bb_2"
+},
+route_bb_2: {
+speaker: "农 家俊",
+text: "（乖乖弯下腰）\n哟，还随身带毛巾？",
+next: "route_bb_3"
+},
+route_bb_3: {
+speaker: "你 (刘 俊豪)",
+text: "（掌心压着毛巾，在他头顶揉了两圈，发梢的水被吸走）\n早就准备好了。某人淋雨跑过来，我能不知道？",
+next: "route_bb_4"
+},
+route_bb_4: {
+text: "（从毛巾底下抬眼）\n那我以后每次淋雨，你都给我擦？",
+next: "route_bb_5"
+},
+route_bb_5: {
+text: "（揉到他耳后，指尖顿了一下，继续把毛巾往下拉，盖住他眼睛）",
+next: "route_bb_6"
+},
+route_bb_6: {
+text: "（伸手抓住他手腕，毛巾还顶在头上，声音闷闷的）\n哎呀哎呀，我错了。下次带伞，牵着你走。",
+next: "route_bb_7"
+},
+route_bb_7: {
+text: "（把毛巾往下拉，露出他的眼睛，声音很轻）\n记住你说的。",
+next: "ending_bb"
+},
+ending_bb: {
+ending: true,
+title: "第一章 · 雨日图书馆 END",
+text: "To Be Continued…"
+},
 };
 }
-
-// ============ 引擎 ============
 let currentNode = "start";
 let typingTimer = null;
 let isTyping = false;
-let typewriterQueue = "";
 let historyLog = [];
 let petalTimer = null;
-
+let selectedChapter = null;
 const $ = id => document.getElementById(id);
 const bgEl = $("bg");
 const charEl = $("character");
@@ -712,160 +973,142 @@ const speakerEl = $("speaker");
 const textEl = $("text");
 const choicesEl = $("choices");
 const dialogueBox = $("dialogueBox");
-// ============ 章节选择 ============
 const CHAPTERS = [
-  {
-    id: "ch0",
-    title: "序章 · 樱花之约",
-    desc: "",
-    startNode: "start",
-    require: null
-  },
 {
-  id: "ch1",
-  title: "第一章 · 雨日图书馆",
-  desc: "",
-  startNode: "ss1", 
-  require: "ch0",
-  locked: true
+id: "ch0",
+title: "序章 · 樱花之约",
+desc: "转学第一天，那个人的视线就黏在了你身上。",
+startNode: "start",
+require: null
+},
+{
+id: "ch1",
+title: "第一章 · 雨日图书馆",
+desc: "雨天的图书馆，镜子里的两个人，谁先移开了视线？",
+startNode: "ss1",
+require: "ch0",
 }
-
 ];
-
 function getClearedChapters() {
-  try {
-    return JSON.parse(localStorage.getItem("clearedChapters") || "[]");
-  } catch(e) { return []; }
+try { return JSON.parse(localStorage.getItem("clearedChapters") || "[]"); } catch(e) { return []; }
 }
 function saveClearedChapter(id) {
-  const cleared = getClearedChapters();
-  if (!cleared.includes(id)) {
-    cleared.push(id);
-    localStorage.setItem("clearedChapters", JSON.stringify(cleared));
-  }
+const cleared = getClearedChapters();
+if (!cleared.includes(id)) { cleared.push(id); localStorage.setItem("clearedChapters", JSON.stringify(cleared)); }
 }
-
 function openChapterPanel() {
-  const cleared = getClearedChapters();
-  const listEl = document.getElementById("chapterList");
-  listEl.innerHTML = "";
-
-  CHAPTERS.forEach(ch => {
-    let status = "locked";
-    if (ch.locked) {
-      status = "locked"; 
-    } else if (!ch.require) {
-      status = cleared.includes(ch.id) ? "cleared" : "available";
-    } else if (cleared.includes(ch.require)) {
-      status = cleared.includes(ch.id) ? "cleared" : "available";
-    }
-
+playSFX('click');
+stopAllBGM();
+playBGM('standby');
+const cleared = getClearedChapters();
+const listEl = document.getElementById("chapterList");
+listEl.innerHTML = "";
+CHAPTERS.forEach(ch => {
+let status = "locked";
+if (ch.locked) {
+status = "locked";
+} else if (!ch.require) {
+status = cleared.includes(ch.id) ? "cleared" : "available";
+} else if (cleared.includes(ch.require)) {
+status = cleared.includes(ch.id) ? "cleared" : "available";
+}
 const card = document.createElement("div");
 card.className = "chapter-card" + (status === "locked" ? " locked" : "");
-const statusText = status === "cleared" 
-  ? "已通关" 
-  : status === "available" 
-  ? "可进入" 
-  : ch.locked 
-  ? "未开放" 
-  : "未解锁";
+const statusText = status === "cleared" ? "已通关" : status === "available" ? "可进入" : ch.locked ? "未开放" : "未解锁";
 card.innerHTML = `
-  <div class="chapter-title">${ch.title}</div>
-  <div class="chapter-desc">${ch.desc}</div>
-  <div class="chapter-status status-${status}">${statusText}</div>
+<div class="chapter-title">${ch.title}</div>
+<div class="chapter-desc">${ch.desc}</div>
+<div class="chapter-status status-${status}">${statusText}</div>
 `;
 if (status !== "locked") {
-  card.onclick = () => enterChapter(ch);
+card.onclick = () => openChapterModal(ch, status);
 }
 listEl.appendChild(card);
-
-  });
-
-  document.getElementById("chapterPanel").style.display = "flex";
+});
+document.getElementById("chapterPanel").style.display = "flex";
 }
-
 function closeChapterPanel() {
-  document.getElementById("chapterPanel").style.display = "none";
+playSFX('click');
+document.getElementById("chapterPanel").style.display = "none";
 }
-
-function enterChapter(chapter) {
-  closeChapterPanel();
-  $("titleScreen").style.display = "none";
-  $("endingScreen").style.display = "none";
-  dialogueBox.style.display = "block";
-  currentNode = chapter.startNode;
-  historyLog = [];
-  showNode(chapter.startNode);
-  spawnPetals();
+function openChapterModal(ch, status) {
+selectedChapter = ch;
+playSFX('click');
+const stateEl = $('bgmState');
+stateEl.currentTime = 0;
+stateEl.playbackRate = (status === 'cleared' || status === 'available') ? 1.0 : 0.75;
+stateEl.play().catch(()=>{});
+$('modalTitle').textContent = ch.title;
+$('modalDesc').textContent = ch.desc;
+$('modalCover').style.backgroundImage = `url('${backgrounds.sakura}')`;
+$('modalStartBtn').textContent = status === 'cleared' ? '再玩一次' : '开始章节';
+const modal = $('chapterModal');
+modal.classList.remove('closing');
+modal.style.display = 'flex';
+void modal.offsetWidth;
+modal.classList.add('show');
 }
-
-// 在结局处记录通关
-const _origShowEnding = showEnding;
-showEnding = function(node) {
-  if (node === script["ending_a"]) saveClearedChapter("ch1");
-  if (node === script["ending_b"]) saveClearedChapter("ch2");
-  saveClearedChapter("ch0");
-  _origShowEnding(node);
-};
-
-buildScript();
-
-function startGame() {
-$("titleScreen").style.display = "none";
-currentNode = "start";
+function closeChapterModal() {
+playSFX('click');
+const modal = $('chapterModal');
+if (modal.style.display !== 'flex') return;
+modal.classList.add('closing');
+setTimeout(() => {
+modal.classList.remove('show', 'closing');
+modal.style.display = 'none';
+}, 350);
+}
+function startSelectedChapter() {
+if (!selectedChapter) return;
+closeChapterModal();
+$('titleScreen').style.display = 'none';
+$('endingScreen').style.display = 'none';
+$('chapterPanel').style.display = 'none';
+dialogueBox.style.display = 'block';
+stopAllBGM();
+playBGM('game');
+currentNode = selectedChapter.startNode;
 historyLog = [];
-showNode("start");
+showNode(selectedChapter.startNode);
 spawnPetals();
 }
-
+buildScript();
+function startGame() {
+playSFX('click');
+$('titleScreen').style.display = 'none';
+openChapterPanel();
+}
 function showNode(id) {
 const node = script[id];
 if (!node) return;
 currentNode = id;
-
 if (node.ending) {
 showEnding(node);
 return;
 }
-
-// 背景
 if (node.bg) bgEl.style.backgroundImage = `url('${backgrounds[node.bg]}')`;
-
-// 角色
 if (node.char && node.expr) {
 charEl.src = characters[node.char][node.expr];
 charEl.classList.add("show");
 } else {
 charEl.classList.remove("show");
 }
-
-// 对话
 speakerEl.textContent = node.speaker || "";
 typeText(node.text || "");
-
-// 历史
 if (node.text) historyLog.push({ speaker: node.speaker, text: node.text });
-
-// 选项
 if (node.choices && node.choices.length > 0) {
 setTimeout(() => showChoices(node.choices), 600);
 } else {
 choicesEl.style.display = "none";
 }
 }
-
 function typeText(str) {
 clearInterval(typingTimer);
 textEl.innerHTML = "";
 isTyping = true;
 let i = 0;
-const cursor = document.createElement("span");
-cursor.className = "cursor";
-cursor.innerHTML = "█";
-
 typingTimer = setInterval(() => {
 if (i < str.length) {
-// 支持 \n，忽略 \b
 const ch = str[i] === "\n" ? "<br>" : (str[i] === "\b" ? "" : str[i]);
 textEl.innerHTML += ch;
 i++;
@@ -875,7 +1118,6 @@ isTyping = false;
 }
 }, 35);
 }
-
 function showChoices(choices) {
 choicesEl.innerHTML = "";
 choices.forEach(c => {
@@ -883,6 +1125,7 @@ const btn = document.createElement("button");
 btn.className = "choice-btn";
 btn.textContent = c.text;
 btn.onclick = () => {
+playSFX('click');
 choicesEl.style.display = "none";
 showNode(c.next);
 };
@@ -890,63 +1133,57 @@ choicesEl.appendChild(btn);
 });
 choicesEl.style.display = "flex";
 }
-
 function showEnding(node) {
+playSFX('end');
 charEl.classList.remove("show");
 dialogueBox.style.display = "none";
 $("endingTitle").textContent = node.title;
 $("endingText").textContent = node.text;
 $("endingScreen").style.display = "flex";
-}
 
+// ★ 修复：结局时保存当前章节通关状态
+if (selectedChapter) {
+  saveClearedChapter(selectedChapter.id);
+}
+}
 function backToTitle() {
 $("endingScreen").style.display = "none";
 dialogueBox.style.display = "block";
 $("titleScreen").style.display = "flex";
 bgEl.style.backgroundImage = `url('${backgrounds.sakura}')`;
+stopAllBGM();
+playBGM('standby');
 }
-
-// 点击继续
 document.addEventListener("click", (e) => {
-// 忽略按钮点击
 if (e.target.tagName === "BUTTON") return;
 if (e.target.closest("#choices")) return;
 if (e.target.closest("#menuPanel")) return;
 if ($("titleScreen").style.display !== "none") return;
 if ($("endingScreen").style.display === "flex") return;
 if ($("menuPanel").style.display === "flex") return;
-
 const node = script[currentNode];
 if (!node) return;
-
 if (isTyping) {
-// 跳过打字
 clearInterval(typingTimer);
 textEl.innerHTML = (node.text || "").replace(/\n/g, "<br>").replace(/\b/g, "");
 isTyping = false;
 } else if (node.choices && node.choices.length > 0) {
-// 有选项时不跳过
 return;
 } else if (node.next) {
 showNode(node.next);
 }
 });
-
-// 菜单
 function toggleMenu() {
 const m = $("menuPanel");
 m.style.display = m.style.display === "flex" ? "none" : "flex";
 }
-$("menuBtn").onclick = toggleMenu;
-
+$("menuBtn").onclick = () => { playSFX('click'); toggleMenu(); };
 function restart() {
 toggleMenu();
 startGame();
 }
-
 function showHistory() {
 toggleMenu();
-// 改为页面内弹层，避免 window.open 被浏览器拦截
 let h = historyLog.slice(-12).map(h => `<b>${h.speaker || "　"}</b>：${h.text.replace(/\n/g," ")}`).join("<br><br>");
 if (!h) h = "（暂无对话记录）";
 let overlay = document.getElementById("historyOverlay");
@@ -959,8 +1196,6 @@ document.getElementById("app").appendChild(overlay);
 overlay.innerHTML = `<h2 style="color:#ffb6c8;font-size:22px;margin-bottom:20px;">对话回顾</h2><div style="max-width:600px;color:#f5f0f3;line-height:1.9;font-size:15px;text-align:left;">${h}</div><button class="menu-item" style="margin-top:28px;" onclick="document.getElementById('historyOverlay').style.display='none'">关闭</button>`;
 overlay.style.display = "flex";
 }
-
-// 樱花粒子（仅初始化一次，避免重复定时器）
 function spawnPetals() {
 if (petalTimer) return;
 petalTimer = setInterval(() => {
@@ -973,10 +1208,8 @@ document.getElementById("app").appendChild(p);
 setTimeout(() => p.remove(), 11000);
 }, 400);
 }
-
-// 初始化背景
 bgEl.style.backgroundImage = `url('${backgrounds.sakura}')`;
+playBGM('standby');
 </script>
 </body>
 </html>
-！
